@@ -36,8 +36,11 @@ except ImportError:
     pass
 
 
-def get_logger():
-    logger = logging.getLogger()
+def get_logger(name=None):
+    if name:
+        logger = logging.getLogger(name)
+    else:
+        logger = logging.getLogger()
 
     if not logger.handlers:
         logger.setLevel(logging.INFO)
