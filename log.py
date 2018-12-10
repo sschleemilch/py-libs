@@ -1,8 +1,6 @@
 import logging
 from logging import StreamHandler
-from os.path import splitext, basename
 import sys
-import argparse
 
 colors_supported = False
 try:
@@ -51,16 +49,13 @@ def get_logger(name=None):
             console_handler = StreamHandler(sys.stdout)
 
         console_handler.setLevel(logging.DEBUG)
-
         formatter = logging.Formatter('%(asctime)s |%(levelname)-8s| %(message)s', '%Y-%m-%d %H:%M:%S')
-
         console_handler.setFormatter(formatter)
-
         logger.addHandler(console_handler)
 
     return logger
 
 
 def add_debug_argument(parser):
-    parser.add_argument('--debug', action='store_true', required=False, help='Enables debug output')
+    parser.add_argument('--debug', action='store_true', required=False, help='Enables debug outputs')
     return parser
