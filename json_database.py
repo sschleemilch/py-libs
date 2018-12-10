@@ -1,6 +1,6 @@
 import os
 import json
-from .log import get_logger
+from log import get_logger
 
 LOGGER = get_logger(__file__)
 
