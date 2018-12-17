@@ -3,6 +3,8 @@ from logging import StreamHandler
 import sys
 
 colors_supported = False
+FORMATTER = logging.Formatter('%(asctime)s %(filename)s |%(levelname)-8s| %(message)s', '%Y-%m-%d %H:%M:%S')
+
 try:
     from colorama import init, Fore, Back, Style
     colors_supported = True
@@ -35,10 +37,7 @@ except ImportError:
 
 
 def get_logger(name=None):
-    if name:
-        logger = logging.getLogger(name)
-    else:
-        logger = logging.getLogger()
+    logger = logging.getLogger(name)
 
     if not logger.handlers:
         logger.setLevel(logging.INFO)
@@ -49,13 +48,20 @@ def get_logger(name=None):
             console_handler = StreamHandler(sys.stdout)
 
         console_handler.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s |%(levelname)-8s| %(message)s', '%Y-%m-%d %H:%M:%S')
-        console_handler.setFormatter(formatter)
+        console_handler.setFormatter(FORMATTER)
         logger.addHandler(console_handler)
 
     return logger
 
 
+def set_log_file(logger, log_file_name):
+    log_file_handler = logging.FileHandler(log_file_name)
+    log_file_handler.setLevel(logging.DEBUG)
+    log_file_handler.setFormatter(FORMATTER)
+    logger.addHandler(log_file_handler)
+
+
 def add_debug_argument(parser):
     parser.add_argument('--debug', action='store_true', required=False, help='Enables debug outputs')
+    parser.add_argument('--quiet', action='store_true', required=False, help='Only prints errors')
     return parser

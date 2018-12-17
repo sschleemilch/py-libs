@@ -1,12 +1,35 @@
 import os
 import fnmatch
-from log import get_logger
+import hashlib
+from log import get_logger, set_log_file
 
 LOGGER = get_logger(__file__)
 
 
-def set_log_levels(log_level):
+def set_log_levels_and_file(log_level, log_file=None):
     LOGGER.setLevel(log_level)
+    if log_file:
+        set_log_file(LOGGER, log_file)
+
+
+def hash(file, large=False):
+    blocksize = 65536
+    LOGGER.debug("Hashing file '%s'", file)
+    LOGGER.debug("Large file hashing using a blocksize of '%d': '%r'", blocksize, large)
+    hasher = hashlib.md5()
+    with open(file, 'rb') as hash_file:
+        if large:
+            buf = hash_file.read(blocksize)
+        else:
+            buf = hash_file.read()
+        if large:
+            while len(buf) > 0:
+                hasher.update(buf)
+                buf = hash_file.read(blocksize)
+        else:
+            hasher.update(buf)
+        hasher.update(buf)
+    return hasher.hexdigest()
 
 
 def get_files_with_pattern(pattern, start='.', recursive=True, skip_hidden_dirs=True, skip_hidden_files=True):
@@ -24,7 +47,7 @@ def get_files_with_pattern(pattern, start='.', recursive=True, skip_hidden_dirs=
             filenames = [f for f in filenames if not f[0] == '.']
 
         for filename in fnmatch.filter(filenames, pattern):
-            LOGGER.debug("File '%s' matches pattern criteria '%s'", filename, pattern)
+            LOGGER.debug("'%s' matches '%s'", filename, pattern)
             matches.append(os.path.abspath(os.path.join(root, filename)))
 
         if not recursive:

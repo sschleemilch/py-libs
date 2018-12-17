@@ -1,11 +1,13 @@
 import os
-from .log import get_logger
+from log import get_logger, set_log_file
 
 LOGGER = get_logger(__file__)
 
 
-def set_log_levels(log_level):
+def set_log_levels_and_file(log_level, log_file=None):
     LOGGER.setLevel(log_level)
+    if log_file:
+        set_log_file(LOGGER, log_file)
 
 
 class inDir:
