@@ -61,7 +61,6 @@ def set_log_file(logger, log_file_name):
     logger.addHandler(log_file_handler)
 
 
-def add_debug_argument(parser):
+def add_logging_arguments(parser):
     parser.add_argument('--debug', action='store_true', required=False, help='Enables debug outputs')
     parser.add_argument('--quiet', action='store_true', required=False, help='Only prints errors')
-    return parser
