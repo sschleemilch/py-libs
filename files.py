@@ -46,6 +46,10 @@ def get_files_with_patterns(patterns, start='.', recursive=True, skip_hidden_dir
 def get_files_with_pattern(pattern, start='.', recursive=True, skip_hidden_dirs=True, skip_hidden_files=True):
     matches = []
     start = os.path.abspath(start)
+    if not os.path.exists(start):
+        error_message = "Directory '{}' to start search does not exist".format(start)
+        LOGGER.error(error_message)
+        raise FileNotFoundError(error_message)
     LOGGER.debug("Finding files with pattern '%s' in directory '%s'", pattern, start)
     LOGGER.debug("Recursive: '%r'", recursive)
     LOGGER.debug("Skipping hidden directories: '%r'", skip_hidden_dirs)
