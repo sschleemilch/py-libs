@@ -32,6 +32,17 @@ def hash(file, large=False):
     return hasher.hexdigest()
 
 
+def get_files_with_patterns(patterns, start='.', recursive=True, skip_hidden_dirs=True, skip_hidden_files=True):
+    if type(patterns) is not list:
+        error_message = 'Given pattern is not a list'
+        LOGGER.error(error_message)
+        raise TypeError(error_message)
+    files = []
+    for pattern in patterns:
+        files.append(get_files_with_pattern(pattern, start, recursive, skip_hidden_dirs, skip_hidden_files))
+    return files
+
+
 def get_files_with_pattern(pattern, start='.', recursive=True, skip_hidden_dirs=True, skip_hidden_files=True):
     matches = []
     start = os.path.abspath(start)
