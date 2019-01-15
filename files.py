@@ -1,7 +1,7 @@
 import os
 import fnmatch
 import hashlib
-from log import get_logger, set_log_file
+from .log import get_logger, set_log_file
 
 LOGGER = get_logger(__file__)
 
