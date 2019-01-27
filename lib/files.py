@@ -44,7 +44,7 @@ def get_files_with_patterns(patterns, start='.', recursive=True, skip_hidden_dir
         raise TypeError(error_message)
     files = []
     for pattern in patterns:
-        files.append(get_files_with_pattern(pattern, start, recursive, skip_hidden_dirs, skip_hidden_files))
+        files += get_files_with_pattern(pattern, start, recursive, skip_hidden_dirs, skip_hidden_files)
     return files
 
 
@@ -61,8 +61,7 @@ def get_files_with_pattern(pattern, start='.', recursive=True, skip_hidden_dirs=
     LOGGER.debug("Skipping hidden files: '%r'", skip_hidden_files)
     for root, dirnames, filenames in os.walk(start):
         if skip_hidden_dirs:
-            dirnames = [d for d in dirnames if not d[0] == '.']
-
+            dirnames[:] = [d for d in dirnames if not d[0] == '.']
         if skip_hidden_files:
             filenames = [f for f in filenames if not f[0] == '.']
 
