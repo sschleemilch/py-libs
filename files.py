@@ -12,7 +12,12 @@ def set_log_level_and_file(log_level, log_file=None):
         set_log_file(LOGGER, log_file)
 
 
-def hash(file, large=False):
+def hash_file(file, large=False):
+    if not os.path.exists(file):
+        error_message = "File '{}' to hash does not exist".format(file)
+        LOGGER.error(error_message)
+        raise FileNotFoundError(error_message)
+
     blocksize = 65536
     LOGGER.debug("Hashing file '%s'", file)
     LOGGER.debug("Large file hashing using a blocksize of '%d': '%r'", blocksize, large)
