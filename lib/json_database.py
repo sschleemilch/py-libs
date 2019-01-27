@@ -13,14 +13,15 @@ def set_log_level_and_file(log_level, log_file=None):
 
 class JSONDatabase():
     @staticmethod
-    def get_database_path(database_name, database_path='~'):
+    def get_database_path(database_name, database_path):
         database_path = os.path.expanduser(database_path)
-        database_name = database_name + '.json'
+        if not database_name.endswith('.json'):
+            database_name = database_name + '.json'
         database_path = os.path.join(database_path, database_name)
         return database_path
 
-    def __init__(self, database_name, database_template):
-        self.database_path = JSONDatabase.get_database_path(database_name)
+    def __init__(self, database_name, database_template, database_path='~'):
+        self.database_path = JSONDatabase.get_database_path(database_name, database_path)
         if os.path.exists(self.database_path):
             LOGGER.debug("JSON Database file '%s' already exists. Loading content now.", self.database_path)
             with open(self.database_path) as f:

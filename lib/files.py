@@ -63,7 +63,7 @@ def get_files_with_pattern(pattern, start='.', recursive=True, skip_hidden_dirs=
         if skip_hidden_dirs:
             dirnames[:] = [d for d in dirnames if not d[0] == '.']
         if skip_hidden_files:
-            filenames = [f for f in filenames if not f[0] == '.']
+            filenames[:] = [f for f in filenames if not f[0] == '.']
 
         for filename in fnmatch.filter(filenames, pattern):
             LOGGER.debug("'%s' matches '%s'", filename, pattern)

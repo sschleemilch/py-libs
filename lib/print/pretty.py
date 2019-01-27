@@ -12,7 +12,7 @@ class Status(Enum):
 
 class Printer():
     def __init__(self,
-                 line_width=get_terminal_size()[0]-1,
+                 line_width=get_terminal_size()[0] - 1,
                  content_color=Color.default,
                  title_color=Color.default,
                  box_color=Color.default,
@@ -35,10 +35,13 @@ class Printer():
         self._box_symbol_corners = corners_symbol
         self._line_symbol_offset = line_offset_symbol
 
-        self._max_line_width = self._width - (2 * len(self._box_symbol_left_right))
-        self._max_title_width = self._width - (2 * len(self._box_symbol_corners)) - (2 * len(self._box_symbol_top_bottom)) - 2
+        self._max_line_width = self._width - \
+            (2 * len(self._box_symbol_left_right))
+        self._max_title_width = self._width - \
+            (2 * len(self._box_symbol_corners)) - \
+            (2 * len(self._box_symbol_top_bottom)) - 2
 
-    def set_layout(self, 
+    def set_layout(self,
                    line_width=None,
                    content_color=None,
                    title_color=None,
@@ -80,10 +83,12 @@ class Printer():
         else:
             new_top_bottom_symbol = self._box_symbol_top_bottom
 
-        self.__init__(new_line_width, new_content_color, new_title_color, new_box_color, new_line_offset_symbol, new_left_right_symbol, new_corners_symbol, new_top_bottom_symbol)
+        self.__init__(new_line_width, new_content_color, new_title_color, new_box_color,
+                      new_line_offset_symbol, new_left_right_symbol, new_corners_symbol, new_top_bottom_symbol)
 
     def divider(self):
-        print(ColorString(self._box_symbol_corners + (self._width - 2) * self._box_symbol_top_bottom + self._box_symbol_corners, self._color_box))
+        print(ColorString(self._box_symbol_corners + (self._width - 2) *
+                          self._box_symbol_top_bottom + self._box_symbol_corners, self._color_box))
 
     @staticmethod
     def get_string_parts_with_max_length(string, max_length):
@@ -96,7 +101,8 @@ class Printer():
         return splitted_string
 
     def title(self, title, color=None):
-        title_splitted = Printer.get_string_parts_with_max_length(title, self._max_title_width)
+        title_splitted = Printer.get_string_parts_with_max_length(
+            title, self._max_title_width)
         title_to_print = title_splitted[0]
         if len(title_splitted) > 1:
             title_to_print = title_to_print[:-3] + '...'
@@ -110,7 +116,6 @@ class Printer():
 
         title_colored = ColorString(title_to_print, title_color)
 
-        width_title = len(title_colored)
         width_corners = 2 * len(self._box_symbol_corners)
         width_lines = (self._width - len(title_colored) - width_corners) / 2
         width_title_line_left = width_title_line_right = int(width_lines)
@@ -118,8 +123,10 @@ class Printer():
         if str(width_lines).split('.')[1] == '5':
             width_title_line_left += 1
 
-        left = self._box_symbol_corners + (width_title_line_left * self._box_symbol_top_bottom)
-        right = (width_title_line_right * self._box_symbol_top_bottom) + self._box_symbol_corners
+        left = self._box_symbol_corners + \
+            (width_title_line_left * self._box_symbol_top_bottom)
+        right = (width_title_line_right *
+                 self._box_symbol_top_bottom) + self._box_symbol_corners
 
         left_colored = ColorString(left, self._color_box)
         right_colored = ColorString(right, self._color_box)
@@ -150,12 +157,14 @@ class Printer():
     def __print_box_line(self, content):
         content = ' ' + content + ' '
         left_box = ColorString(self._box_symbol_left_right, self._color_box)
-        right_box = ColorString(' ' * (self._max_line_width - len(content)) + self._box_symbol_left_right, self._color_box)
+        right_box = ColorString(
+            ' ' * (self._max_line_width - len(content)) + self._box_symbol_left_right, self._color_box)
         print(left_box + content + right_box)
 
     def __print_without_status(self, content, offset=0, color=None):
         max_content_width = self._max_line_width - offset - 2
-        content_splitted = Printer.get_string_parts_with_max_length(content, max_content_width)
+        content_splitted = Printer.get_string_parts_with_max_length(
+            content, max_content_width)
 
         offset_string = offset * self._line_symbol_offset
 
@@ -166,9 +175,11 @@ class Printer():
     def __print_with_status(self, content, offset=0, color=None, status=None, status_content=None):
         status_string = self.__get_status_string(status, status_content)
         status_string = ' ' + status_string
-        
-        max_content_width = self._max_line_width - offset - len(status_string) - 2
-        content_splitted = Printer.get_string_parts_with_max_length(content, max_content_width)
+
+        max_content_width = self._max_line_width - \
+            offset - len(status_string) - 2
+        content_splitted = Printer.get_string_parts_with_max_length(
+            content, max_content_width)
 
         offset_string = offset * self._line_symbol_offset
 
@@ -176,16 +187,16 @@ class Printer():
             content_colored = ColorString(content_splitted[i], color)
             to_print = None
             if i == len(content_splitted) - 1:
-                to_print = content_colored + ((max_content_width - len(content_colored)) * ' ') + status_string
+                to_print = content_colored + \
+                    ((max_content_width - len(content_colored)) * ' ') + status_string
             else:
                 to_print = content_colored
             to_print = offset_string + to_print
             self.__print_box_line(to_print)
 
-
     def print(self, content, offset=0, color=None, status=None, status_content=None):
         if status:
-            self.__print_with_status(content, offset, color, status, status_content)
+            self.__print_with_status(
+                content, offset, color, status, status_content)
         else:
             self.__print_without_status(content, offset, color)
-
