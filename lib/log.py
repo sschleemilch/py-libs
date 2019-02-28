@@ -3,7 +3,7 @@ from logging import StreamHandler
 import sys
 
 colors_supported = False
-FORMATTER = logging.Formatter('%(asctime)s %(filename)s |%(levelname)-8s| %(message)s', '%Y-%m-%d %H:%M:%S')
+FORMATTER = logging.Formatter('%(asctime)s %(module)s |%(levelname)-8s| %(message)s', '%Y-%m-%d %H:%M:%S')
 
 try:
     from colorama import init, Fore, Back, Style
@@ -37,7 +37,10 @@ except ImportError:
 
 
 def get_logger(name=None):
-    logger = logging.getLogger(name)
+    if name:
+        logger = logging.getLogger(name)
+    else:
+        logger = logging.getLogger()
 
     if not logger.handlers:
         logger.setLevel(logging.INFO)
