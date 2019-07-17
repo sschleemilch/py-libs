@@ -29,7 +29,7 @@ class JSONDatabase():
     def save(self):
         LOGGER.debug("Saving JSON database '%s' to disk.", self.database_path)
         with open(self.database_path, 'w') as database:
-            json.dump(self.data, database)
+            json.dump(self.data, database, indent=4)
 
     def delete(self):
         LOGGER.warning("Deleting JSON database '%s'", self.database_path)
