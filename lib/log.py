@@ -65,5 +65,5 @@ def set_log_file(logger, log_file_name):
 
 
 def add_logging_arguments(parser):
-    parser.add_argument('--debug', action='store_true', required=False, help='Enables debug outputs')
-    parser.add_argument('--quiet', action='store_true', required=False, help='Only prints errors')
+    parser.add_argument('--debug', action='store_true', help='Enables debug outputs')
+    parser.add_argument('--quiet', action='store_true', help='Only prints errors')
