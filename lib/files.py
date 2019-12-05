@@ -67,4 +67,5 @@ def get_files_with_pattern(pattern, start='.', recursive=True, skip_hidden_dirs=
             break
 
     LOGGER.debug("Found '%d' files that did match the pattern '%s' in '%s'", len(matches), pattern, start)
+    LOGGER.debug("Found files: '{}'".format(matches))
     return matches
