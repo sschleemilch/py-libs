@@ -33,7 +33,7 @@ def hash_file(file, large=False):
 
 def get_files_with_patterns(patterns, start='.', recursive=True, skip_hidden_dirs=True, skip_hidden_files=True):
     if type(patterns) is not list:
-        error_message = 'Given pattern is not a list'
+        error_message = "Given pattern is not a list but is '{}'".format(type(patterns))
         LOGGER.error(error_message)
         raise TypeError(error_message)
     files = []
