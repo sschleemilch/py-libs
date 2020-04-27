@@ -31,18 +31,18 @@ def hash_file(file, large=False):
     return hasher.hexdigest()
 
 
-def get_files_with_patterns(patterns, start='.', recursive=True, skip_hidden_dirs=True, skip_hidden_files=True):
+def get_files_with_patterns(patterns, start='.', recursive=True, hidden_dirs=False, hidden_files=False, excludes=[]):
     if type(patterns) is not list:
         error_message = "Given pattern is not a list but is '{}'".format(type(patterns))
         LOGGER.error(error_message)
         raise TypeError(error_message)
     files = []
     for pattern in patterns:
-        files += get_files_with_pattern(pattern, start, recursive, skip_hidden_dirs, skip_hidden_files)
+        files += get_files_with_pattern(pattern, start, recursive, hidden_dirs, hidden_files, excludes)
     return files
 
 
-def get_files_with_pattern(pattern, start='.', recursive=True, skip_hidden_dirs=True, skip_hidden_files=True):
+def get_files_with_pattern(pattern, start='.', recursive=True, hidden_dirs=False, hidden_files=False, excludes=[]):
     matches = []
     start = os.path.abspath(start)
     if not os.path.exists(start):
@@ -51,13 +51,14 @@ def get_files_with_pattern(pattern, start='.', recursive=True, skip_hidden_dirs=
         raise FileNotFoundError(error_message)
     LOGGER.debug("Finding files with pattern '%s' in directory '%s'", pattern, start)
     LOGGER.debug("Recursive: '%r'", recursive)
-    LOGGER.debug("Skipping hidden directories: '%r'", skip_hidden_dirs)
-    LOGGER.debug("Skipping hidden files: '%r'", skip_hidden_files)
+    LOGGER.debug("Skipping hidden directories: '%r'", hidden_dirs)
+    LOGGER.debug("Skipping hidden files: '%r'", hidden_files)
     for root, dirnames, filenames in os.walk(start):
-        if skip_hidden_dirs:
+        if not hidden_dirs:
             dirnames[:] = [d for d in dirnames if not d[0] == '.']
-        if skip_hidden_files:
+        if not hidden_files:
             filenames[:] = [f for f in filenames if not f[0] == '.']
+        filenames[:] = [f for f in filenames if f not in excludes]
 
         for filename in fnmatch.filter(filenames, pattern):
             LOGGER.debug("'%s' matches '%s'", filename, pattern)

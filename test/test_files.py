@@ -11,11 +11,15 @@ class TestFiles(TestCase):
     def setUp(self):
         try:
             os.makedirs(TEST_DIR + '/.hidden')
+            os.makedirs(TEST_DIR + '/normal')
         except FileExistsError:
             pass
         with open(TEST_DIR + '/test.txt', 'a') as f:
             f.write('test')
         open(TEST_DIR + '/test.md', 'a').close()
+        open(TEST_DIR + '/test.txt', 'a').close()
+        open(TEST_DIR + '/normal/test.md', 'a').close()
+        open(TEST_DIR + '/normal/test.txt', 'a').close()
         open(TEST_DIR + '/.hidden/test.txt', 'a').close()
         open(TEST_DIR + '/.hidden/.hidden.txt', 'a').close()
 
@@ -36,32 +40,39 @@ class TestFiles(TestCase):
 
     def test_get_files_with_pattern(self):
         result = lib.files.get_files_with_pattern('*.txt', start=TEST_DIR)
+        self.assertTrue(len(result) == 2)
+
+    def test_get_files_with_pattern_exclude(self):
+        result = lib.files.get_files_with_pattern('*.txt', start=TEST_DIR, excludes=['test.txt'])
+        self.assertTrue(len(result) == 0)
+
+    def test_get_files_with_pattern_non_recursive(self):
+        result = lib.files.get_files_with_pattern('*.txt', start=TEST_DIR, recursive=False)
         self.assertTrue(len(result) == 1)
-        self.assertTrue('test.txt' in result[0])
 
     def test_get_files_with_pattern_hidden(self):
-        result = lib.files.get_files_with_pattern('*.txt', start=TEST_DIR, skip_hidden_dirs=False)
-        self.assertTrue(len(result) == 2)
-
-    def test_get_files_with_pattern_hidden_non_recursive(self):
-        result = lib.files.get_files_with_pattern('*.txt', start=TEST_DIR, recursive=False, skip_hidden_dirs=False)
-        self.assertTrue(len(result) == 1)
-
-    def test_get_files_with_pattern_hidden_files(self):
-        result = lib.files.get_files_with_pattern('*.txt', start=TEST_DIR, skip_hidden_dirs=False, skip_hidden_files=False)
+        result = lib.files.get_files_with_pattern('*.txt', start=TEST_DIR, hidden_dirs=True)
         self.assertTrue(len(result) == 3)
 
-    def test_get_files_with_patterns(self):
-        result = lib.files.get_files_with_patterns(['*.txt', '*.md'], start=TEST_DIR)
-        self.assertTrue(len(result) == 2)
+    def test_get_files_with_pattern_hidden_files(self):
+        result = lib.files.get_files_with_pattern('*.txt', start=TEST_DIR, hidden_dirs=True, hidden_files=True)
+        self.assertTrue(len(result) == 4)
+
+    def test_get_files_with_pattern_hidden_files_exclude(self):
+        result = lib.files.get_files_with_pattern('*.txt', start=TEST_DIR, hidden_dirs=True, hidden_files=True, excludes=['test.txt'])
+        self.assertTrue(len(result) == 1)
+
+    def test_get_files_with_pattern_non_existing_start(self):
+        with self.assertRaises(FileNotFoundError):
+            lib.files.get_files_with_pattern('*.txt', start='IAMNOTEXISTING')
 
     def test_get_files_with_patterns_no_list(self):
         with self.assertRaises(TypeError):
             lib.files.get_files_with_patterns('*.txt')
 
-    def test_get_files_with_pattern_non_existing_start(self):
-        with self.assertRaises(FileNotFoundError):
-            lib.files.get_files_with_pattern('*.txt', start='IAMNOTEXISTING')
+    def test_get_files_with_patterns(self):
+        result = lib.files.get_files_with_patterns(['*.txt', '*.md'], start=TEST_DIR, hidden_dirs=True, hidden_files=True)
+        self.assertTrue(len(result) == 6)
 
 
 if __name__ == '__main__':
